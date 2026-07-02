@@ -1,0 +1,16 @@
+{
+  "name": "avaa-dev",
+  "description": "AVAA DEV plugins — governed AI-assisted software delivery. L'agent IA gouverné. NO CODE NO DONE.",
+  "owner": {
+    "name": "AVAA DEV",
+    "url": "https://github.com/charlesphilippebelhadj"
+  },
+  "plugins": [
+    {
+      "name": "flow-trace-audit",
+      "description": "End-to-end reachability audit powered by the Debug Pilleur Master methodology: 6 universal flux types (user input, backend-backend, backend-UI, UI internal, pipeline, config), three exhaustive inventories cross-referenced into a reachability matrix exposing broken calls, inert triggers, swallowed errors, dead endpoints, and orphan responses. Includes the Regle #30 five-pass reading protocol. Framework-agnostic; every finding proven with file:line evidence.",
+      "source": "./",
+      "category": "quality"
+    }
+  ]
+}
