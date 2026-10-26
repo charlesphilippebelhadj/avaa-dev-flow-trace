@@ -18,10 +18,13 @@ One skill, one method, any stack:
 
 1. **Phase 0 — Discovery**: identifies the project's *real* communication mechanisms from the code (Tauri invoke, WebSocket, HTTP routes, IPC, gRPC, custom bridges…). No assumed architecture.
 2. **Phases 1–3 — Three exhaustive inventories**: backend entry points, frontend emitted calls, UI trigger chains — each item proven with `file:line` evidence.
-3. **Phase 4 — Reachability matrix**: cross-references the inventories and classifies every gap: `DEAD-ENDPOINT`, `BROKEN-CALL`, `INERT-TRIGGER`, `ORPHAN-RESPONSE`, `SWALLOWED-ERROR`.
-4. **Phase 5 — Report with integrity check**: the audit is valid only when every inventoried item is accounted for. Counts must balance.
+3. **Phase 4 — Reachability matrix**: cross-references the inventories and classifies every gap into nine statuses: `BROKEN-CALL`, `INERT-TRIGGER`, `SWALLOWED-ERROR`, `DEAD-ENDPOINT`, `ORPHAN-RESPONSE`, `DEFINED-NOT-REGISTERED`, `PIPELINE-BREAK`, `CONFIG-DRIFT`, `COGNITION-BREAK`.
+4. **Phase 5 — Règle #30**: every command output is read with the five-pass protocol before any conclusion.
+5. **Phase 6 — Report with integrity check**: the audit is valid only when every inventoried item is accounted for. Counts must balance.
 
-The audit modifies zero files. It produces a diagnostic you can trust, then you decide what to wire.
+Flux G traces the cognition of AI agents themselves — perception, real assembled context, recall, traced decision, action, feedback, consolidation — so an agent that ignores instructions, forgets, loops or claims work it did not do is diagnosed like any other broken flow.
+
+The audit modifies zero project files. It produces a diagnostic you can trust, then you decide what to wire.
 
 ## Install
 
@@ -43,7 +46,7 @@ Or just ask naturally — the skill triggers on requests like *"audit the wiring
 
 ## Method provenance
 
-The canonical methodology — **Debug Pilleur Master** (universal version, 2026-05-24) — is bundled verbatim in `skills/flow-trace-audit/references/DEBUG_PILLEUR_MASTER.md` (canonical, French) with a full English translation in `DEBUG_PILLEUR_MASTER_EN.md`: 6 universal flux types with step-by-step verification chains, checklists and schemas, reference commands, 18 documented failure patterns, the Règle #30 five-pass output-reading protocol, and the forbidden anti-patterns of AI-assisted debugging.
+The canonical methodology — **Debug Pilleur Master, Universal Debugging and Tracing Methodology** (universal version 2026-05-24, flux G 2026-10-26) — is bundled verbatim in `skills/flow-trace-audit/references/DEBUG_PILLEUR_MASTER.md` (canonical, French) with a full English translation in `DEBUG_PILLEUR_MASTER_EN.md`: 7 universal flux types (including agent cognition) with step-by-step verification chains, checklists and schemas, reference commands, 25 documented failure patterns, the Règle #30 five-pass output-reading protocol, the forbidden anti-patterns of AI-assisted debugging, and how to apply the method to development tasks, not only diagnostics.
 
 It was forged on real projects at AVAA DEV, where a governed multi-agent delivery system enforces one doctrine: a feature is not done until its complete flow — trigger → transport → handler → effect → response — is traced and proven. Assumptions are forbidden; evidence is mandatory.
 

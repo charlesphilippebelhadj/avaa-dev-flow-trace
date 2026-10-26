@@ -1,7 +1,7 @@
 {
   "name": "flow-trace-audit",
-  "version": "1.2.0",
-  "description": "End-to-end reachability and flow-tracing audit for any codebase, powered by the Debug Pilleur Master methodology (AVAA DEV). Six universal flux types, three exhaustive inventories cross-referenced into a reachability matrix, five anomaly classes, and the Regle #30 five-pass output-reading protocol. Every claim proven with file:line evidence. Tracing the flow is the source of truth.",
+  "version": "1.4.0",
+  "description": "End-to-end reachability and flow-tracing audit for any codebase, powered by the Debug Pilleur Master methodology (AVAA DEV). Seven universal flux types including agent cognition, three exhaustive inventories cross-referenced into a reachability matrix, nine anomaly statuses, and the Regle #30 five-pass output-reading protocol. Every claim proven with file:line evidence. Tracing the flow is the source of truth.",
   "author": {
     "name": "AVAA DEV",
     "url": "https://github.com/charlesphilippebelhadj"

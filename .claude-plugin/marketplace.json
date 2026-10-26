@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "flow-trace-audit",
-      "description": "End-to-end reachability audit powered by the Debug Pilleur Master methodology: 6 universal flux types (user input, backend-backend, backend-UI, UI internal, pipeline, config), three exhaustive inventories cross-referenced into a reachability matrix exposing broken calls, inert triggers, swallowed errors, dead endpoints, and orphan responses. Includes the Regle #30 five-pass reading protocol. Framework-agnostic; every finding proven with file:line evidence.",
+      "description": "End-to-end reachability audit powered by the Debug Pilleur Master methodology: 7 universal flux types (user input, backend-backend, backend-UI, UI internal, pipeline, config, agent cognition), three exhaustive inventories cross-referenced into a reachability matrix exposing broken calls, inert triggers, swallowed errors, dead endpoints, orphan responses, unregistered handlers, pipeline breaks, config drift and broken agent cognition. Includes the Regle #30 five-pass reading protocol. Framework-agnostic; every finding proven with file:line evidence.",
       "source": "./",
       "category": "quality"
     }

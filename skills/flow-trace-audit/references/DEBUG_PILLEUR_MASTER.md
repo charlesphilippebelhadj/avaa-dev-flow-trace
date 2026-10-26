@@ -1,9 +1,31 @@
-# Debug Pilleur Master — Methodologie de Debug Universelle
+# Debug Pilleur Master — Methodologie de Debug et de Tracage Universelle
 
 > Document de reference. A integrer dans le CLAUDE.md de chaque projet.
+> Methode de travail autant que de debug : comprendre ce qui se passe, decider quoi faire et comment le faire.
 > Ce protocole est NON NEGOCIABLE pour TOUT diagnostic, dans TOUT projet.
 > Tout bug, toute modification, tout cablage commence par un tracage de flux complet.
 > Tracer le flux EST la source de verite. Pas les suppositions. Pas la memoire. Le flux reel.
+
+## Table des matieres
+
+1. Principe Fondamental
+2. Les 7 types de flux
+3. FLUX A — Entree utilisateur → Backend (6 etapes)
+4. FLUX B — Backend → Backend (4 etapes)
+5. FLUX C — Backend → UI (5 etapes)
+6. FLUX D — UI interne (3 etapes)
+7. FLUX E — Pipeline / Workflow (5 etapes)
+8. FLUX F — Configuration / Infra (4 etapes)
+9. FLUX G — Cognition d'un agent (7 etapes)
+10. Problemes courants (tous flux)
+11. Commandes de reference
+12. Protocole de lecture des resultats — Regle #30
+13. Comportements interdits
+14. Comment utiliser ce document
+
+Ce document se lit integralement, du debut a la fin, avant tout audit ou toute tache. Cette table sert uniquement a naviguer pendant l'application des procedures.
+
+---
 
 ## Principe Fondamental
 
@@ -17,9 +39,9 @@ Quel que soit le type de modification, IDENTIFIER et VERIFIER chaque maillon de 
 
 ---
 
-## Les 6 types de flux
+## Les 7 types de flux
 
-Tout systeme logiciel se decompose en combinaisons de ces 6 flux. Identifier le(s) flux concerne(s) AVANT de debugger.
+Tout systeme logiciel se decompose en combinaisons de ces 7 flux. Identifier le(s) flux concerne(s) AVANT de debugger.
 
 | Flux | Description | Quand l'utiliser |
 |------|-------------|------------------|
@@ -29,6 +51,7 @@ Tout systeme logiciel se decompose en combinaisons de ces 6 flux. Identifier le(
 | D | UI interne | Composants, state management, navigation frontend |
 | E | Pipeline / Workflow | Chaine de traitements sequentiels (CI/CD, agents, batch) |
 | F | Configuration / Infra | Configs, schemas, variables d'env, permissions, hooks |
+| G | Cognition d'un agent | Agent IA (LLM, multi-agents, architecture cognitive) : ce qu'il percoit, retient, decide, fait et apprend |
 
 ---
 
@@ -42,7 +65,7 @@ Ou l'utilisateur declenche l'action ?
 
 ```bash
 # UI web — appels reseau
-grep -rn "fetch\|axios\|sendMessage\|emit\|submit\|onClick\|dispatch" src/ app/ frontend/ COCKPIT/
+grep -rn "fetch\|axios\|sendMessage\|emit\|submit\|onClick\|dispatch" src/ app/ frontend/
 
 # CLI — commandes
 grep -rn "argparse\|click\|typer\|sys.argv\|command" cli/ commands/ tools/
@@ -89,7 +112,7 @@ grep -n "from\|import\|self\._get\|self\." handlers/handler_file.py
 La methode appelee existe ET sa signature correspond a l'appel ?
 
 ```bash
-grep -n "def method_name\(" module_file.py
+grep -n "def method_name(" module_file.py
 # Comparer params avec l'appel reel dans le handler
 ```
 
@@ -98,7 +121,7 @@ grep -n "def method_name\(" module_file.py
 L'UI/CLI gere correctement la reponse retournee ?
 
 ```bash
-grep -rn "data.action\|response\.\|then(\|catch(\|onMessage\|handleResponse" src/ frontend/ COCKPIT/
+grep -rn "data.action\|response\.\|then(\|catch(\|onMessage\|handleResponse" src/ frontend/
 ```
 
 ### Checklist Flux A
@@ -154,7 +177,7 @@ Pour chaque modification impliquant des modules/services qui s'appellent entre e
 Qui appelle la fonction/methode/service ?
 
 ```bash
-grep -rn "module_name\.\|from.*module_name import" src/ core/ lib/ avaa_dev/
+grep -rn "module_name\.\|from.*module_name import" src/ core/ lib/
 ```
 
 ### 2. Interface verifiee
@@ -163,10 +186,10 @@ La signature correspond a ce que l'appelant envoie ?
 
 ```bash
 # Lire la signature reelle
-grep -n "def method_name\(" module_name.py
+grep -n "def method_name(" module_name.py
 
 # Comparer avec l'appel reel
-grep -n "module_name.method_name\(" appelant.py
+grep -n "module_name.method_name(" appelant.py
 ```
 
 Points a verifier :
@@ -271,7 +294,7 @@ grep -rn "send_response\|send_json\|jsonify\|emit\|broadcast\|action.*=" src/ co
 Le frontend a un handler pour cette donnee ?
 
 ```bash
-grep -rn "fetch\|axios\|onMessage\|subscribe\|data\.action\|addEventListener\|useQuery" src/ frontend/ app/ COCKPIT/
+grep -rn "fetch\|axios\|onMessage\|subscribe\|data\.action\|addEventListener\|useQuery" src/ frontend/ app/
 ```
 
 ### 5. Rendu verifie
@@ -337,7 +360,7 @@ Pour chaque modification purement frontend (composants, state management, naviga
 D'ou vient la donnee affichee ?
 
 ```bash
-grep -rn "useStore\|useState\|defineProps\|computed\|ref(\|reactive(\|createStore\|useSelector\|mapState" src/ frontend/ app/ COCKPIT/
+grep -rn "useStore\|useState\|defineProps\|computed\|ref(\|reactive(\|createStore\|useSelector\|mapState" src/ frontend/ app/
 ```
 
 - Store global (Pinia, Redux, Vuex, Zustand) ?
@@ -553,6 +576,159 @@ grep -rn "if.*config_key\|when.*setting\|gate\|hook\|permission" src/ core/ hook
 
 ---
 
+## FLUX G — Cognition d'un agent (7 etapes)
+
+Pour chaque comportement d'un agent IA (LLM, orchestrateur, organe, sous-agent, systeme multi-agents) : un agent est un flux comme les autres. Ce qu'il "comprend" n'est jamais suppose — c'est ce qui a reellement traverse chaque etape du cycle cognitif. Le flux G se combine avec les autres : une action d'agent est souvent un flux A ou B, sa memoire un flux F ou E.
+
+### 1. Perception — stimulus identifie
+
+Qu'est-ce que l'agent a reellement recu ?
+
+```bash
+grep -rn "on_message\|handle_input\|user_message\|receive\|on_event\|stimulus" agents/ core/ src/
+```
+
+- Message utilisateur, evenement, resultat d'un autre agent, declencheur planifie
+- Contenu exact recu (pas celui qu'on croit avoir envoye)
+- Source et format identifies
+
+### 2. Attention — contexte assemble verifie
+
+Qu'est-ce qui entre reellement dans la fenetre de contexte au moment du raisonnement ?
+
+```bash
+grep -rn "system_prompt\|messages\|build_context\|context_window\|max_tokens\|truncate" agents/ core/ src/
+```
+
+- Contenu REEL envoye au modele (payload journalise, pas reconstruit)
+- Taille mesuree vs limite : troncature, elagage, resume automatique ?
+- Ordre des elements (instructions, historique, documents, outils declares)
+- Aucune consigne ou donnee attendue absente du contexte
+
+### 3. Rappel — memoire recuperee verifiee
+
+Qu'est-ce que l'agent a recupere de sa memoire, et pourquoi ?
+
+```bash
+grep -rn "retrieve\|recall\|search_memory\|embedding\|vector\|top_k\|similarity" agents/ memory/ core/ src/
+```
+
+- Requete de rappel reelle (texte, filtres, seuil, nombre de resultats)
+- Elements recuperes lus integralement — pertinents, a jour, non contradictoires
+- Elements attendus mais NON recuperes identifies
+- Le rappel est injecte dans le contexte (etape 2), pas seulement calcule
+
+### 4. Raisonnement — decision tracee
+
+Sur quelle base l'agent a-t-il choisi quoi faire ?
+
+```bash
+grep -rn "plan\|decide\|route\|select_tool\|tool_choice\|intent" agents/ core/ src/
+```
+
+- Decision issue du raisonnement sur le contexte (etapes 1 a 3), pas d'une regle cablee, d'un mot-cle ou d'un template qui court-circuite la cognition
+- Raisonnement ou plan observable (trace, journal) relu en entier
+- Choix coherent avec les instructions et les donnees presentes
+- Alternatives ecartees identifiables quand la trace le permet
+
+### 5. Action — execution verifiee
+
+L'action decidee a-t-elle reellement eu lieu, telle que decidee ?
+
+```bash
+grep -rn "tool_calls\|tool_use\|function_call\|execute_tool\|invoke\|dispatch" agents/ tools/ core/ src/
+```
+
+- Outil/organe appele existe dans le registre declare (pas d'outil hallucine)
+- Arguments conformes au schema declare (noms, types, champs requis)
+- Execution reelle (pas simulee, pas mockee) — preuve dans les journaux
+- Si l'action traverse un transport : tracer le flux A ou B correspondant
+
+### 6. Retroaction — observation integree
+
+Le resultat de l'action revient-il dans la boucle, et l'agent en tient-il compte ?
+
+```bash
+grep -rn "tool_result\|observation\|on_result\|feedback\|max_iterations\|stop_condition" agents/ core/ src/
+```
+
+- Resultat reinjecte dans le contexte de l'iteration suivante
+- Erreurs propagees a l'agent, pas avalees (`except: pass`, resultat vide)
+- Condition d'arret presente (objectif atteint, budget, nombre d'iterations)
+- Sortie finale fondee sur les observations : chaque affirmation de l'agent ("FAIT", "corrige", "teste") correspond a un resultat reel
+
+### 7. Consolidation — memoire mise a jour
+
+Ce que l'agent a appris est-il persiste et retrouvable ?
+
+```bash
+grep -rn "save_memory\|persist\|consolidate\|write_memory\|upsert\|store" agents/ memory/ core/ src/
+```
+
+- Ecriture reellement effectuee (preuve : relecture du stockage)
+- Contenu ecrit = ce qui a ete observe, pas une supposition de l'agent
+- Retrouvable par le rappel de l'etape 3 au cycle suivant (boucle fermee)
+- Pas de doublon contradictoire avec une memoire existante
+
+### Checklist Flux G
+
+- [ ] Stimulus reellement recu identifie (contenu exact, source)
+- [ ] Contexte reel assemble verifie (contenu, taille, troncature)
+- [ ] Rappel memoire verifie (requete, resultats, absences)
+- [ ] Decision tracee jusqu'au raisonnement, sans regle cablee qui la court-circuite
+- [ ] Action executee conforme au registre et au schema, avec preuve
+- [ ] Observation reinjectee, erreurs propagees, condition d'arret presente
+- [ ] Memoire consolidee et retrouvable au cycle suivant
+
+### Schema
+
+```
++-------------------+
+|   Perception      |  1. Stimulus
+|   entree reelle   |
++---------+---------+
+          |
+          v
++---------+---------+
+|   Attention       |  2. Contexte
+|   contexte reel   |
++---------+---------+
+          |
+          v
++---------+---------+
+|   Rappel          |  3. Rappel
+|   memoire         |<--------------------------+
++---------+---------+                           |
+          |                                     |
+          v                                     |
++---------+---------+                           |
+|   Raisonnement    |  4. Decision              |
+|   decision tracee |<----------------+         |
++---------+---------+                 |         |
+          |                           |         |
+          v                           |         |
++---------+---------+                 |         |
+|   Action          |  5. Execution   |         |
+|   outil/organe    |                 |         |
++---------+---------+                 |         |
+          |                           |         |
+          v                           |         |
++---------+---------+                 |         |
+|   Retroaction     |  6. Observation |         |
+|   resultat reel   |-----------------+         |
++---------+---------+                           |
+          |                                     |
+          v                                     |
++---------+---------+                           |
+|   Consolidation   |  7. Memoire               |
+|   apprentissage   |---------------------------+
++-------------------+
+                        boucle interne : iteration
+                        boucle externe : cycle suivant
+```
+
+---
+
 ## Problemes courants (tous flux)
 
 | Probleme | Symptome | Flux | Solution |
@@ -575,6 +751,13 @@ grep -rn "if.*config_key\|when.*setting\|gate\|hook\|permission" src/ core/ hook
 | Transport silencieux | Donnee envoyee jamais recue | C | Verifier canal + handler reception |
 | Format incompatible | TypeError cote consommateur | B, C | Comparer type envoye vs attendu |
 | Preuve absente | Statut FAIT sans evidence | E | Collecter preuves avant de marquer |
+| Contexte tronque | Agent ignore une consigne ou une donnee fournie | G | Mesurer le contexte reel envoye, verifier troncature et ordre |
+| Rappel defaillant | Agent repose une question deja resolue | G | Verifier requete de rappel, seuil, injection dans le contexte |
+| Decision court-circuitee | Meme comportement quel que soit le contexte | G | Tracer la decision : regle cablee, mot-cle ou template a la place du raisonnement |
+| Outil hallucine | Appel a un outil ou parametre inexistant | G | Comparer l'appel au registre et au schema declares |
+| Observation ignoree | Reponse qui contredit le resultat d'outil | G | Verifier la reinjection du resultat dans l'iteration suivante |
+| Boucle sans fin | Agent repete la meme action | G | Verifier condition d'arret et budget d'iterations |
+| Consolidation absente | Agent oublie d'une session a l'autre | G | Verifier ecriture memoire puis relecture au cycle suivant |
 
 ---
 
@@ -627,10 +810,24 @@ grep -rn "DONE\|FAIT\|FAILED\|EN_COURS\|PENDING\|status" pipeline/ state/
 # === FLUX F — Config ===
 
 # Fichiers de config
-find . -name "*.yaml" -o -name "*.yml" -o -name "*.toml" -o -name "*.env" -o -name "settings.*" | head -20
+find . -name "*.yaml" -o -name "*.yml" -o -name "*.toml" -o -name "*.env" -o -name "settings.*"
 
 # Consommateurs
 grep -rn "load_config\|getenv\|config\[" src/ core/
+
+# === FLUX G — Cognition d'un agent ===
+
+# Contexte assemble
+grep -rn "system_prompt\|messages\|build_context\|max_tokens\|truncate" agents/ core/ src/
+
+# Rappel memoire
+grep -rn "retrieve\|recall\|embedding\|top_k\|similarity" agents/ memory/ core/
+
+# Actions et retroaction
+grep -rn "tool_calls\|tool_use\|function_call\|tool_result\|max_iterations" agents/ tools/ core/
+
+# Consolidation
+grep -rn "save_memory\|persist\|consolidate\|upsert" agents/ memory/ core/
 
 # === UNIVERSEL ===
 
@@ -679,7 +876,7 @@ Patterns connus a verifier :
 - Comptage embelli — "9/10" mais 3 sont casses en realite
 - Erreur masquee — `except: pass` qui avale les erreurs
 - Resultat selectif — `| head -5` au lieu de tout montrer
-- Statut partial — "Tests passent" sans comptage complet visible
+- Statut partiel — "Tests passent" sans comptage complet visible
 - Redefinition de critere — l'agent change la definition de "succes"
 
 **PASSE 5 — Implications et actions**
@@ -708,6 +905,7 @@ Ces anti-patterns sont les plus frequents. Ils DOIVENT etre interceptes.
 - **INTERDIT** : "Cette methode devrait exister" → GREP d'abord
 - **INTERDIT** : "Ce module est probablement initialise" → VERIFIER d'abord
 - **INTERDIT** : "L'import semble correct" → LIRE l'import reel
+- **INTERDIT** : "L'agent a compris la consigne" → LIRE le contexte reellement envoye et la trace de decision
 - **OBLIGATOIRE** : Chaque fait avance est prouve par une commande executee
 
 ### Debug reactif au lieu de proactif
@@ -740,12 +938,30 @@ Ces anti-patterns sont les plus frequents. Ils DOIVENT etre interceptes.
    ```
 3. Adapter les commandes grep aux chemins specifiques du projet
 
+### Pour chaque tache de developpement
+
+1. Identifier le(s) flux que la tache touche (A a G)
+2. Tracer la chaine existante maillon par maillon, avec preuve (fichier:ligne)
+3. Ecrire la chaine cible : chaque maillon a creer, modifier ou connecter
+4. Implementer maillon par maillon, dans l'ordre du flux
+5. Remplir la checklist de chaque flux touche — chaque case prouvee par une commande executee
+6. Ne declarer "FAIT" que lorsque la chaine cible est tracee de bout en bout
+
 ### Pour chaque bug ou modification
 
-1. Identifier le(s) flux concerne(s) (A a F)
+1. Identifier le(s) flux concerne(s) (A a G)
 2. Suivre les etapes du flux dans l'ordre
 3. Remplir la checklist — chaque point verifie avec preuve
 4. Si un point manque, le flux est casse → corriger AVANT de continuer
+
+### Pour conclure toute tache
+
+L'agent qui travaille est lui-meme un agent : avant de conclure, il applique le flux G a son propre travail.
+
+1. Perception et attention : ai-je lu le contexte reel (fichiers, sorties, consignes) ou l'ai-je suppose ?
+2. Raisonnement : ma decision vient-elle de ce que j'ai lu, ou d'une habitude ?
+3. Retroaction : chaque "FAIT" que j'annonce correspond-il a une observation reelle ?
+4. Consolidation : ce que j'ai appris est-il ecrit la ou le prochain cycle le retrouvera ?
 
 ### Pour chaque lecture de resultat
 
@@ -756,5 +972,5 @@ Ces anti-patterns sont les plus frequents. Ils DOIVENT etre interceptes.
 ---
 
 *Methodologie originale : session AVAA v3.3.0 (2026-01-27)*
-*Version universelle : 2026-05-24*
+*Version universelle : 2026-05-24 — Flux G (cognition d'un agent) : 2026-10-26*
 *Applicable a tout projet logiciel — aucune dependance a un framework ou langage specifique*
